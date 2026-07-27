@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Lanchonete_Restaurante
@@ -12,10 +14,10 @@ namespace Lanchonete_Restaurante
         public int Id { get; private set; }
         public string Nome { get; set; }
         public string Categoria { get; set; }
-        public decimal PrecoBase { get; set; }
+        public decimal PrecoBase { get; private set; }
         public bool EstaDisponivel { get; private set; }
 
-        public ItemCardapio(int id, string nome, string categoria, decimal precoBase, bool estaDisponivel)
+        public ItemCardapio(int id, string nome, string categoria, decimal precoBase)
         {
             if (precoBase <= 0)
                 throw new ArgumentException("O preço base não pode ser igual a zero ou negativo.");
@@ -23,7 +25,7 @@ namespace Lanchonete_Restaurante
             this.Nome = nome;
             this.Categoria = categoria;
             this.PrecoBase = precoBase;
-            this.EstaDisponivel = estaDisponivel;
+            this.EstaDisponivel = true;
         }
 
         public void PausarVendas()
@@ -45,8 +47,20 @@ namespace Lanchonete_Restaurante
                 throw new ArgumentException("O desconto informado não é aceito.");
             }
             else
+            { 
+                this.PrecoBase -= (this.PrecoBase * (porcentagem / 100));
+            }
+        }
+        
+        public void AlterarPrecoBase(decimal novoPreco)
+        {
+            if (novoPreco <= 0)
             {
-                this.PrecoBase -= (this.PrecoBase*(porcentagem / 100));
+                throw new ArgumentException("O preço base não pode ser igual a zero ou negativo.");
+            }
+            else
+            {
+                this.PrecoBase = novoPreco;
             }
         }
     }
